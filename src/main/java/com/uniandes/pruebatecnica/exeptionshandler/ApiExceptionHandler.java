@@ -3,6 +3,8 @@ package com.uniandes.pruebatecnica.exeptionshandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +27,24 @@ public class ApiExceptionHandler {
     @ResponseBody
     public ErrorMessage badRequest (HttpServletRequest request, Exception exception){
         return new ErrorMessage(exception, request.getRequestURI());
+    }
+    
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({
+        ForbiddenExeption.class,
+        AccessDeniedException.class
+    })
+    @ResponseBody
+    public ErrorMessage forbiddenRequest (HttpServletRequest request, Exception exception){
+        return new ErrorMessage(exception, request.getRequestURI());
+    }
+    
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({
+        UnauthorizedException.class,
+        BadCredentialsException.class
+    })
+    public void unauthorizedRequest (){
     }
     
     @ResponseStatus(HttpStatus.NOT_FOUND)
