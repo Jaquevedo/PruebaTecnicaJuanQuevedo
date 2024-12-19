@@ -1,6 +1,7 @@
-package com.uniandes.pruebatecnica.models.response;
+package com.uniandes.pruebatecnica.model.response;
 
-import com.uniandes.pruebatecnica.models.StarShip;
+import com.uniandes.pruebatecnica.model.StarShip;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,6 @@ public class StarshipsResponse {
     private int count;
     private String next;
     private String previous;
-    private List<StarShip> results;
+    private List<StarShip> results = new ArrayList<StarShip>();
     
 }

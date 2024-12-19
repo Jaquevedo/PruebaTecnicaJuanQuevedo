@@ -1,4 +1,4 @@
-package com.uniandes.pruebatecnica.models;
+package com.uniandes.pruebatecnica.model;
 
 import java.util.List;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class StarShip {
-    
+
     private String name;
     private String model;
     private String manufacturer;
@@ -34,5 +34,5 @@ public class StarShip {
     private String created;
     private String edited;
     private String url;
-    
+
 }
