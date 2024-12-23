@@ -41,14 +41,7 @@ public class SpecificStarshipsMapper {
         List<SpecificStarshipDTO> listaDTO = new ArrayList<>();
 
         for (StarShip starShip : starships) {
-            SpecificStarshipDTO ssdto = SpecificStarshipDTO.builder()
-                    .nombreNave(starShip.getName())
-                    .modelo(starShip.getModel())
-                    .costo(starShip.getCost_in_credits())
-                    .velocidad(starShip.getMax_atmosphering_speed())
-                    .capacidadCargaPersonal(starShip.getCrew())
-                    .capacidadCargaPasajeros(starShip.getPassengers())
-                    .build();
+            SpecificStarshipDTO ssdto = toSpecificStarshipDTO(starShip);
             listaDTO.add(ssdto);
         }
 

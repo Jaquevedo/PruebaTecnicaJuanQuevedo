@@ -47,21 +47,7 @@ public class UpdateStarshipMapper {
         List<UpdateStarshipDTO> listaDTO = new ArrayList<>();
 
         for (StarShip starShip : starships) {
-            UpdateStarshipDTO usdto = UpdateStarshipDTO.builder()
-                    .nombreNave(starShip.getName())
-                    .modelo(starShip.getModel())
-                    .costo(starShip.getCost_in_credits())
-                    .velocidad(starShip.getMax_atmosphering_speed())
-                    .capacidadCargaPersonal(starShip.getCrew())
-                    .capacidadCargaPasajeros(starShip.getPassengers())
-                    .nombrePilotos(starShip.getPilots())
-                    .build();
-
-            // Extrae el ID de la URL del StarShip y lo asigna al DTO
-            String url = starShip.getUrl();
-            String number = url.replaceAll(".*/(\\d+)/?", "$1");
-            usdto.setId(number);
-
+            UpdateStarshipDTO usdto = toUpdateStarshipDTO(starShip);
             listaDTO.add(usdto);
         }
 

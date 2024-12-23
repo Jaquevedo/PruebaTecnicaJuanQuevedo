@@ -36,12 +36,7 @@ public class GeneralStarshipsMapper {
     public List<GeneralStarshipDTO> toGeneralStarshipsDTO(List<StarShip> starships) {
         List<GeneralStarshipDTO> listaDTO = new ArrayList<>();
         for (StarShip starShip : starships) {
-            GeneralStarshipDTO gsdto = GeneralStarshipDTO.builder()
-                    .nombreNave(starShip.getName())
-                    .modelo(starShip.getModel())
-                    .costo(starShip.getCost_in_credits())
-                    .velocidad(starShip.getMax_atmosphering_speed())
-                    .build();
+            GeneralStarshipDTO gsdto = toGeneralStarshipDTO(starShip);
             listaDTO.add(gsdto);
         }
         return listaDTO;

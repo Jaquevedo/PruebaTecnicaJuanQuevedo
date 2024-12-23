@@ -48,22 +48,7 @@ public class PilotMapper {
         List<PilotDTO> listaDTO = new ArrayList<>();
 
         for (Person person : people) {
-            PilotDTO pdto = PilotDTO.builder()
-                    .nombre(person.getName())
-                    .altura(person.getHeight())
-                    .genero(person.getGender())
-                    .peso(person.getMass())
-                    .añoNacimiento(person.getBirth_year())
-                    .nombrePlanetaOrigen(person.getHomeworld())
-                    .nombreVehiculos(person.getVehicles())
-                    .nombreNaves(person.getStarships())
-                    .build();
-
-            // Configura la especie si está presente, de lo contrario establece "Sin especie"
-            pdto.setNombreEspecie(person.getSpecies().stream()
-                    .findFirst()
-                    .orElse("Sin especie"));
-
+            PilotDTO pdto = toPilotDTO(person);
             listaDTO.add(pdto);
         }
 
