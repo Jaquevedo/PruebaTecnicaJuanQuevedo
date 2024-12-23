@@ -18,19 +18,40 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Servicio para gestionar las actualizaciones y obtención de naves espaciales.
+ * Proporciona métodos para modificar y consultar información localmente almacenada.
+ */
 @Service
 public class UpdateStarshipService {
 
+    /**
+     * URL base para consumir la API de naves espaciales.
+     */
     private final String urlBase = "https://swapi.py4e.com/api/starships/";
+
+    /**
+     * Lista de naves espaciales actualizadas mantenida en memoria.
+     */
     private List<UpdateStarshipDTO> updateStarshipsDTO = new ArrayList<>();
 
     @Autowired
     private RestTemplate restTemplate;
+
     @Autowired
     private WebClient webClient;
+
     @Autowired
     private UpdateStarshipMapper updateStarshipMapper;
 
+    /**
+     * Actualiza una nave espacial en la lista local.
+     *
+     * @param id ID de la nave espacial a actualizar.
+     * @param updateStarshipDTO Objeto con la nueva información de la nave.
+     * @return DTO actualizado de la nave espacial.
+     * @throws NotFoundException Si no se encuentra una nave con el ID proporcionado.
+     */
     public UpdateStarshipDTO updateStarship(String id, UpdateStarshipDTO updateStarshipDTO) {
         updateStarshipDTO.setId(id);
         for (int i = 0; i < updateStarshipsDTO.size(); i++) {
@@ -42,6 +63,13 @@ public class UpdateStarshipService {
         throw new NotFoundException("Starship not found with id: " + id);
     }
 
+    /**
+     * Obtiene una nave espacial de la lista local por su ID.
+     *
+     * @param id ID de la nave espacial.
+     * @return DTO de la nave espacial encontrada.
+     * @throws NotFoundException Si no se encuentra una nave con el ID proporcionado.
+     */
     public UpdateStarshipDTO getStarship(String id) {
         return updateStarshipsDTO.stream()
                 .filter(starship -> starship.getId().equals(id))
@@ -49,6 +77,10 @@ public class UpdateStarshipService {
                 .orElseThrow(() -> new NotFoundException("Starship not found with id: " + id));
     }
 
+    /**
+     * Inicializa la lista local de naves espaciales consumiendo datos de la API.
+     * Los datos son procesados y almacenados en memoria.
+     */
     @PostConstruct
     public void init() {
         String nextPageUrl = urlBase;
@@ -73,7 +105,12 @@ public class UpdateStarshipService {
         updateStarshipsDTO = updateStarshipMapper.toSpecificStarshipsDTO(allStarships);
     }
 
-    //Método para consumir una URL individual y obtener la propiedad 'name'
+    /**
+     * Consume una URL individual para obtener el valor de la propiedad 'name'.
+     *
+     * @param url URL a consumir.
+     * @return Nombre obtenido desde la URL.
+     */
     private Mono<String> fetchNameFromUrlAsync(String url) {
         return webClient.get()
                 .uri(url)
@@ -83,7 +120,12 @@ public class UpdateStarshipService {
                 .defaultIfEmpty("Unknown");
     }
 
-    //Método para consumir una lista de URLs y obtener los nombres
+    /**
+     * Consume una lista de URLs para obtener sus respectivos nombres.
+     *
+     * @param urls Lista de URLs a consumir.
+     * @return Lista de nombres obtenidos desde las URLs.
+     */
     private List<String> fetchNamesFromUrlsAsync(List<String> urls) {
         return Flux.fromIterable(urls)
                 .flatMap(this::fetchNameFromUrlAsync)

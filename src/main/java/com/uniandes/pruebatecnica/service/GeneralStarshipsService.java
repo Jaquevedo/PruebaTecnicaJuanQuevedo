@@ -13,27 +13,45 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * Servicio para gestionar operaciones relacionadas con naves espaciales generales.
+ */
 @Service
 public class GeneralStarshipsService {
 
+    /**
+     * URL base para consumir la API de naves espaciales.
+     */
     private final String urlBase = "https://swapi.py4e.com/api/starships/";
 
     @Autowired
     private RestTemplate restTemplate;
+
     @Autowired
     private GeneralStarshipsMapper generalStarshipsMapper;
 
-    public GeneralStarshipDTO getSpecificStarchip (int id){
+    /**
+     * Obtiene una nave espacial específica por su ID.
+     *
+     * @param id Identificador de la nave espacial.
+     * @return DTO con los datos generales de la nave espacial.
+     */
+    public GeneralStarshipDTO getSpecificStarchip(int id) {
         ResponseEntity<StarShip> response = restTemplate.getForEntity(urlBase + id, StarShip.class);
         return generalStarshipsMapper.toGeneralStarshipDTO(response.getBody());
     }
-    
-    public Page<GeneralStarshipDTO> getGeneralStarships(Pageable pageable) {
 
-        Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 10);
-        int page = fixedPageable.getPageNumber() + 1;
-        String nextUrl = urlBase + "?page=" + page;
-        StarshipsResponse allStarships = getAllStarships(nextUrl);
+    /**
+     * Obtiene una página de naves espaciales generales.
+     *
+     * @param pageable Información de paginación.
+     * @return Página de naves espaciales con el tamaño definido.
+     */
+    public Page<GeneralStarshipDTO> getGeneralStarships(Pageable pageable) {
+        Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 10); // Tamaño fijo de página
+        int page = fixedPageable.getPageNumber() + 1; // Página actual
+        String nextUrl = urlBase + "?page=" + page; // URL de la página
+        StarshipsResponse allStarships = getAllStarships(nextUrl); // Consumo de la API
 
         return new PageImpl<>(
                 generalStarshipsMapper.toGeneralStarshipsDTO(allStarships.getResults()),
@@ -41,54 +59,15 @@ public class GeneralStarshipsService {
                 allStarships.getCount());
     }
 
-    //Metodo para consumir la pagina actual de la Api
+    /**
+     * Obtiene los datos de una página específica de naves espaciales desde la API.
+     *
+     * @param nextPageUrl URL de la página a consumir.
+     * @return Respuesta con los datos de la página de naves espaciales.
+     */
     private StarshipsResponse getAllStarships(String nextPageUrl) {
         ResponseEntity<StarshipsResponse> response = restTemplate.getForEntity(nextPageUrl, StarshipsResponse.class);
         return response.getBody();
     }
 
-//    public Page<GeneralStarshipDTO> getGeneralStarships(Pageable pageable) {
-//
-//        List<GeneralStarshipDTO> allStarshipsDTO = generalStarshipsMapper.toGeneralStarshipDTO(getAllStarships());
-//        allStarshipsDTO = pagination(pageable, allStarshipsDTO);
-//        return new PageImpl<>(allStarshipsDTO, pageable, allStarshipsDTO.size());
-//    }
-//
-//    //Metodod para entregar respuesta paginada
-//    private List<GeneralStarshipDTO> pagination(Pageable pageable, List<GeneralStarshipDTO> allStarshipsDTO) {
-//
-//        // Calcular total de páginas
-//        int totalElements = allStarshipsDTO.size();
-//        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
-//
-//        // Validar si el número de página supera el total de páginas
-//        if (pageable.getPageNumber() >= totalPages) {
-//            int pageNumber = pageable.getPageNumber() + 1;
-//            throw new BadRequestException("La página solicitada " + pageNumber
-//                    + " no existe. El total de páginas es " + totalPages + ".");
-//        }
-//
-//        //Si es valido, construir paginación
-//        int start = (int) pageable.getOffset();
-//        int end = Math.min((start + pageable.getPageSize()), allStarshipsDTO.size());
-//        List<GeneralStarshipDTO> paginatedList = allStarshipsDTO.subList(start, end);
-//
-//        return paginatedList;
-//    }
-//
-//    //Metodo para consumir todas las paginas e la Api
-//    private List<StarShip> getAllStarships() {
-//        String nextPageUrl = url;
-//        List<StarShip> allStarships = new ArrayList<>();
-//        while (nextPageUrl != null) {
-//            ResponseEntity<StarshipsResponse> response = restTemplate.getForEntity(nextPageUrl, StarshipsResponse.class);
-//            if (response != null) {
-//                allStarships.addAll(response.getBody().getResults());
-//                nextPageUrl = response.getBody().getNext();
-//                continue;
-//            }
-//            break;
-//        }
-//        return allStarships;
-//    }
 }

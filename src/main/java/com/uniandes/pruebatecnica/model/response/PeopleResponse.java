@@ -7,16 +7,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Representa la respuesta de la API para una lista de personas.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class PeopleResponse {
 
+    /**
+     * Número total de elementos disponibles en la API.
+     */
     private int count;
-    private String next;
-    private String previous;
-    private List<Person> results;
 
+    /**
+     * URL de la siguiente página de resultados (si existe).
+     */
+    private String next;
+
+    /**
+     * URL de la página anterior de resultados (si existe).
+     */
+    private String previous;
+
+    /**
+     * Lista de personas devueltas en la página actual.
+     */
+    private List<Person> results;
 }
